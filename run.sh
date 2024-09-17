@@ -71,7 +71,7 @@ eval set -- "$ARGS"
 if [[ $USE_DOCKER == 0 ]]; then
     
     if [[ $KILL_PS == 1 ]]; then
-        kill -9 $(ps aux | grep 'afy/cam_fomm.py' | awk '{print $2}') 2> /dev/null
+        kill -9 $(ps aux | grep 'afy/cam_liveportrait.py' | awk '{print $2}') 2> /dev/null
     fi
     
     source scripts/settings.sh
@@ -87,7 +87,7 @@ if [[ $USE_DOCKER == 0 ]]; then
     
     export PYTHONPATH=$PYTHONPATH:$(pwd):$(pwd)/fomm
     
-    python afy/cam_fomm.py \
+    python afy/cam_liveportrait.py \
         --config $FOMM_CONFIG \
         --checkpoint $FOMM_CKPT \
         --virt-cam $CAMID_VIRT \
@@ -126,7 +126,7 @@ else
             --env="DISPLAY" \
             --env="QT_X11_NO_MITSHM=1" \
             --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-            avatarify python3 afy/cam_fomm.py \
+            avatarify python3 afy/cam_liveportrait.py \
                 --config $FOMM_CONFIG \
                 --checkpoint $FOMM_CKPT \
                 --virt-cam $CAMID_VIRT \
@@ -139,7 +139,7 @@ else
         docker run $DOCKER_ARGS -it --rm --privileged  \
             -v $PWD:/root/.torch/models \
             -v $PWD/avatars:/app/avatarify/avatars \
-            avatarify python3 afy/cam_fomm.py \
+            avatarify python3 afy/cam_liveportrait.py \
                 --config $FOMM_CONFIG \
                 --checkpoint $FOMM_CKPT \
                 --virt-cam $CAMID_VIRT \

@@ -1,10 +1,15 @@
-from predictor_local import PredictorLocal
+# from predictor_local import PredictorLocal
+from LivePortrait.src.predictor_local_live_portrait import LivePortraitPipeline as PredictorLocal
+from LivePortrait.src.config.argument_config import ArgumentConfig
+from LivePortrait.src.config.inference_config import InferenceConfig
+from LivePortrait.src.config.crop_config import CropConfig
 from arguments import opt
 from networking import SerializingContext, check_connection
 from utils import Logger, TicToc, AccumDict, Once
 
 import cv2
 import numpy as np
+import tyro
 import zmq
 import msgpack
 import msgpack_numpy as m
@@ -29,6 +34,8 @@ QUEUE_SIZE = 100
 #     def __getattr__(self, *args, **kwargs):
 #         return lambda *args, **kwargs: None
 
+def partial_fields(target_class, kwargs):
+    return target_class(**{k: v for k, v in kwargs.items() if hasattr(target_class, k)})
 
 class PredictorWorker():
     def __init__(self, in_port=None, out_port=None):
@@ -140,8 +147,11 @@ class PredictorWorker():
                         log("Same config as before... reusing previous predictor")
                     else:
                         del predictor
-                        predictor_args = args
-                        predictor = PredictorLocal(*predictor_args[0], **predictor_args[1])
+                        # specify configs for inference
+                        predictor_args = tyro.cli(ArgumentConfig)
+                        inference_cfg = partial_fields(InferenceConfig, predictor_args.__dict__)
+                        crop_cfg = partial_fields(CropConfig, predictor_args.__dict__)
+                        predictor = PredictorLocal(inference_cfg=inference_cfg, crop_cfg=crop_cfg)
                         log("Initialized predictor with:", predictor_args, important=True)
                     result = True
                     tt.tic() # don't account for init
