@@ -34,3 +34,4 @@ huggingface-cli download KwaiVGI/LivePortrait --local-dir pretrained_weights --e
 
 cd ..
 pip3 install -r requirements.txt
+echo "All installations done. Install torch and torchvision based on cuda version from nvcc -V according to https://pytorch.org/get-started/previous-versions/"
