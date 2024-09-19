@@ -223,7 +223,7 @@ if __name__ == "__main__":
         from LivePortrait.src.config.inference_config import InferenceConfig
         from LivePortrait.src.config.crop_config import CropConfig
         import tyro
-        predictor_args = tyro.cli(ArgumentConfig)
+        predictor_args = ArgumentConfig()
         inference_cfg = partial_fields(InferenceConfig, predictor_args.__dict__)
         crop_cfg = partial_fields(CropConfig, predictor_args.__dict__)
         predictor = PredictorLocal(inference_cfg=inference_cfg, crop_cfg=crop_cfg)
